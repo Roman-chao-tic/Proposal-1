@@ -38,21 +38,21 @@
             color: #2A562C;
         }
 
-        .message span {
+        .message span[data-tooltip] {
             position: relative;
             cursor: pointer;
         }
 
         .message span[data-tooltip]:hover {
-            color: #ff0; /* Change the text color on hover */
-            text-shadow: 0 0 5px #ff0, 0 0 10px #ff0;
+            color: #ffd700;
+            text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700;
         }
 
         .message span[data-tooltip]:hover::after {
             content: attr(data-tooltip);
             position: absolute;
             background: rgba(0, 0, 0, 0.8);
-            color: #fff;
+            color: #ffd700;
             font-size: 0.8rem;
             padding: 5px 10px;
             border-radius: 5px;
@@ -109,20 +109,40 @@
             border-color: #B71C1C;
         }
 
-        #pleading-message { 
-            display: none; 
-            font-size: 1.5rem; 
-            font-weight: bold; 
-            color: #2A562C; 
-            padding: 10px 20px; 
-            border-radius: 10px; 
-            margin-top: 20px; 
-            text-shadow: 2px 2px 4px #000; 
+        #pleading-message {
+            display: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2A562C;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px #000;
             animation: hover-effect 1.5s infinite;
             width: 80%;
-            max-width: 400px; 
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 400px;
+        }
+
+        .unmute-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            padding: 10px 20px;
+            border: 2px solid #fff;
+            box-shadow: 4px 4px 0 #000;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-shadow: 2px 2px #000;
+            transition: transform 0.1s ease;
+        }
+
+        .unmute-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         @keyframes hover-effect {
@@ -134,10 +154,26 @@
             }
         }
 
+        /* Glowing Tulip Effect */
+        .glowing-tulip {
+            display: inline-block;
+            font-size: 2rem;
+            text-decoration: none;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px #ff4da6, 0 0 10px #ff4da6, 0 0 15px #ff4da6;
+            }
+            100% {
+                text-shadow: 0 0 10px #ff4da6, 0 0 20px #ff4da6, 0 0 30px #ff4da6;
+            }
+        }
+
         @media (max-width: 600px) {
             .message {
                 font-size: 1.5rem;
-                padding: 0 20px;
             }
 
             button {
@@ -147,51 +183,6 @@
 
             #pleading-message {
                 font-size: 1rem;
-            }
-        }
-
-        .glowing-tulip {
-            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
-            animation: glow 1.5s infinite alternate;
-            cursor: pointer;
-        }
-
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
-            }
-            100% {
-                text-shadow: 0 0 15px #ff00ff, 0 0 25px #ff00ff, 0 0 35px #ff00ff, 0 0 45px #ff00ff;
-            }
-        }
-
-        .typing-container {
-            display: none;
-            position: absolute;
-            top: 20%;
-            left: 10%;
-            color: #000;
-            font-size: 1.2rem;
-            background: #fff;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .rose {
-            position: absolute;
-            animation: fall 3s linear infinite;
-            opacity: 0.8;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-100px);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
             }
         }
     </style>
@@ -207,36 +198,50 @@
         </div>
     </div>
     <div id="pleading-message">Pleaseee say yes! 😭</div>
-    <div class="typing-container" id="typing-container"></div>
+    <button class="unmute-btn" id="unmute-btn" onclick="toggleAudio()">Unmute</button>
+
+    <audio id="background-audio" src="prop1.mp3" preload="auto" loop></audio>
 
     <script>
-        let pleadingMessages = [
+        const audio = document.getElementById('background-audio');
+        const unmuteBtn = document.getElementById('unmute-btn');
+        const pleadingMessage = document.getElementById('pleading-message');
+        const messages = [
             "Pleaseee say yes! I'm begging! 🙏",
             "Amay erom bhabe na bolte parli toh?🥺",
             "You're my sunshine, don't leave me in the rain! 🌞🌧️",
             "Khuuuuuub dukkho dichhis amay 😭"
         ];
-        let messageIndex = 0;
+        let currentMessageIndex = 0;
+        let audioPlaying = false;
+
+        function toggleAudio() {
+            if (audioPlaying) {
+                audio.pause();
+                unmuteBtn.textContent = 'Unmute';
+            } else {
+                audio.play();
+                unmuteBtn.textContent = 'Mute';
+            }
+            audioPlaying = !audioPlaying;
+        }
 
         function handleYes() {
             document.body.style.background = "url('tulip_field.jpg') no-repeat center center/cover";
             setTimeout(() => {
                 document.querySelector('.message').innerHTML = `
-    I love you too hunnyyy<br>
-    Mwahhhhhh 💕<span class='glowing-tulip' onclick="window.location.href='https://roman-chao-tic.github.io/Proposal-2/'">🌷</span>`;
-                document.querySelector('.message').style.color = '#2A562C';  // Set the color here
+                    I love you too hunnyyy<br>
+                    Mwahhhhhh 💕<a href="https://roman-chao-tic.github.io/Proposal-2/" target="_blank" class="glowing-tulip">🌷</a>`;
                 document.querySelector('.buttons').style.display = 'none';
-                document.getElementById('pleading-message').style.display = 'none';
+                pleadingMessage.style.display = 'none';
             }, 500);
         }
 
         function handleNo() {
             document.body.style.background = "url('depressedstorm.gif') no-repeat center center/cover";
-            setTimeout(() => {
-                document.getElementById('pleading-message').innerText = pleadingMessages[messageIndex];
-                document.getElementById('pleading-message').style.display = 'block';
-                messageIndex = (messageIndex + 1) % pleadingMessages.length;
-            }, 500);
+            pleadingMessage.innerText = messages[currentMessageIndex];
+            pleadingMessage.style.display = 'block';
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
         }
     </script>
 </body>
