@@ -227,15 +227,20 @@
         }
 
         function handleYes() {
-            document.body.style.background = "url('tulip_field.jpg') no-repeat center center/cover";
-            setTimeout(() => {
-                document.querySelector('.message').innerHTML = `
-                    I love you too hunnyyy<br>
-                    Mwahhhhhh 💕<a href="https://roman-chao-tic.github.io/Proposal-2/" target="_blank" class="glowing-tulip">🌷</a>`;
-                document.querySelector('.buttons').style.display = 'none';
-                pleadingMessage.style.display = 'none';
-            }, 500);
-        }
+    document.body.style.background = "url('tulip_field.jpg') no-repeat center center/cover";
+    setTimeout(() => {
+        document.querySelector('.message').innerHTML = `
+            I love you too hunnyyy<br>
+            Mwahhhhhh 💕<a href="https://roman-chao-tic.github.io/Proposal-2/" target="_blank" class="glowing-tulip" onclick="openProposal()">🌷</a>`;
+        document.querySelector('.buttons').style.display = 'none';
+        pleadingMessage.style.display = 'none';
+    }, 500);
+}
+
+function openProposal() {
+    window.open("https://roman-chao-tic.github.io/Proposal-2/", "_self");
+}
+
 
         function handleNo() {
             document.body.style.background = "url('depressedstorm.gif') no-repeat center center/cover";
